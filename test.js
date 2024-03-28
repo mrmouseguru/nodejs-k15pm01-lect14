@@ -6,6 +6,9 @@ const main = async () =>{
     let myColl = db.collection("myCollection");
     let docs = await myColl.find({num : 193}).toArray();
     console.log(docs);
+
+    await myColl.insertOne({classCode: "k15pm01",
+                        year : 2024});
 };
 
 main();
