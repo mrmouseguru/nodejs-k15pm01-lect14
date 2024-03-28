@@ -52,9 +52,10 @@ myApi.get("/students", async (req, res) => {
 });
 
 /* Middleware */
-myApi.use("/students/:id", (req, res, next) => {
+myApi.use("/students/:id", async (req, res, next) => {
   let id = req.params.id;
-  let student = STUDENTS[id];
+ // let student = STUDENTS[id];
+ let student = await Students.findOne({id : id});
   if (!student) {
     res.status(404).json({ error: "Unknown student" });
     return;
@@ -78,9 +79,14 @@ myApi.patch("/students/:id", (req, res) => {
 
 /*** This part was added after lecture ***/
 
-myApi.get("/students/:id/courses", (req, res) => {
+myApi.get("/students/:id/courses", async (req, res) => {
   let student = res.locals.student;
-  let courses = COURSES[student.id];
+  //let courses = COURSES[student.id];
+  let data = await Enrollments.find({studentId : student.id}).toArray();
+  let courses = [];
+  for(let doc of data){
+    courses.push({code : doc.code, units : doc.units});
+  }
   res.json({ courses: courses });
 });
 
